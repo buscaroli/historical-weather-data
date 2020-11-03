@@ -1,0 +1,89 @@
+const axios = require('axios')
+const cheerio = require('cheerio')
+const fs = require('fs')
+
+const generateLinks = (year=1980, yearsToCheck=2, city) => {
+    // Base address of the weather forecast service with the historical data.
+    const baseURL = 'https://www.ilmeteo.it/portale/archivio-meteo/'
+
+    // Will cycle through the months in a loop
+    const months = [
+        'Gennaio',
+        'Febbraio',
+        'Marzo',
+        'Aprile',
+        'Maggio',
+        'Giugno',
+        'Luglio',
+        'Agosto',
+        'Settembre',
+        'Ottobre',
+        'Novembre',
+        'Dicembre'
+    ]
+
+    // Starting from Gennaio/January
+    let month = months[0]
+    // Initial address
+    let fullURL = `${baseURL}${city}/${year}/${month}`
+    // Will store the links to fetch from the web.
+    let links = []
+
+    if (!city) {
+        return console.log('The name of the city is required.\nExample: node history.js [year] [years number] [city name]')
+    }
+    for (let i = 0; i < yearsToCheck; i++) {
+        months.forEach((month) => {
+            links.push(fullURL = `${baseURL}${city}/${year}/${month}`)
+            // console.log(`Year/Month [${year}/${month} ] -> ${fullURL}`) 
+        })
+        year++
+    }
+    return links
+} 
+
+const extractData = async (link) => {
+    try {
+        const html = await axios.get(link)
+        return cheerio.load(html.data)
+    }catch(err) {
+        if (err.response) {
+            console.log('Response err ', err.response)
+        } else if(err.request) {
+            console.log('Request err: ', err.request)
+        } else {
+            console.log('Unidentified err: ', err)
+        }
+    }
+}
+
+let getMonthData = extractData('https://www.ilmeteo.it/portale/archivio-meteo/bologna/1980/Gennaio')
+getMonthData.then($ => {
+    let myarray = []
+    $('#mainc > .block tr').each((i, element) => {
+        let dayArray = []
+        if (i >= 14) {
+            // console.log('Element ' + i + $(element).text())
+            $(element).contents().each((j, dayData) => {
+                if (j <= 7) {
+                    dayArray.push(
+                        Number($(dayData).text().replace(/[^\d.-]/g, ''))
+                    )
+                }
+            })
+            myarray.push(
+                dayArray
+            )
+        }
+    })
+    myarray.pop()
+    myarray.pop()
+    
+    console.log(myarray)
+    return myarray
+}).catch(e => console.log(e))
+
+module.exports = {
+    generateLinks,
+    extractData
+}

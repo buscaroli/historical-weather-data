@@ -117,7 +117,7 @@ const printMonth = (function() {
       if (i == 12) {
         i = 0
       } 
-        console.log(months[i])
+        console.log('\n *** ' + months[i] + ' ***\n')
         return i++
     }
     
@@ -129,20 +129,68 @@ const printFull = (year, data) => {
     console.log('------------------------------------------------------------------------')
     data.forEach(month => {
         if (i % 12 === 0){
-            console.log(`\n${year}\n`)
+            console.log(`\n${year++}\n`)
         }
         printMonth()
-        printMonthData(data[i])
+        printMonthData(month)
         i++
     })
 }
-    
 
+// Utility function that cycles through the months
+const cycleMonth = (function() {
+    let i = 0
+    return function () {
+        if (i == 12) {
+            i = 0
+        } 
+        return i++
+    }
+    
+}())
+
+// Stores all data into an array of JS objects and returns it.
+const dumpData = (city, year, data) => {
+    let currentYear = year
+    let currentMonth = months[0]
+
+    let collectedData = []
+
+    let traversedMonths = 0
+    data.forEach(month => {
+        if (traversedMonths % 12 === 0) {
+            currentYear++
+        }
+        currentMonth = cycleMonth()
+
+        month.forEach(day => {
+            collectedData.push(
+                {
+                    city:           city,
+                    year:           currentYear,
+                    month:          currentMonth,
+                    day:            day[0],
+                    tempAvg:        day[1],
+                    tempMin:        day[2],
+                    tempMax:        day[3],
+                    rainMm:         day[4],
+                    umidityPercent: day[5],
+                    windSpeed:      day[6],
+                    gustSpeed:      day[7]
+                }
+            )}
+        )  
+        traversedMonths++
+    })
+    return collectedData
+}
+    
 
 module.exports = {
     generateLinks,
     getMonthData,
     getFullData,
     printMonthData,
-    printFull
+    printFull,
+    dumpData
 }

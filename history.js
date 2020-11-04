@@ -21,8 +21,8 @@ let myAddresses = utils.generateLinks(year, yearsToCheck, city)
 
 //console.log('Address: ', myAddresses[0])
 // utils.getMonthData(myAddresses[0])
-//     .then(data => console.log(data))
+//     .then(data => utils.printMonthData(data))
 
 //console.log(myAddresses)
 utils.getFullData(myAddresses)
-    .then(data => console.log(data))
+    .then(data => utils.printFull(year, data))

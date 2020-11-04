@@ -2,25 +2,25 @@ const axios = require('axios')
 const cheerio = require('cheerio')
 const fs = require('fs')
 
+// Will use to cycle through the months in a loop
+const months = [
+    'Gennaio',
+    'Febbraio',
+    'Marzo',
+    'Aprile',
+    'Maggio',
+    'Giugno',
+    'Luglio',
+    'Agosto',
+    'Settembre',
+    'Ottobre',
+    'Novembre',
+    'Dicembre'
+]
+
 const generateLinks = (year=1980, yearsToCheck=2, city) => {
     // Base address of the weather forecast service with the historical data.
     const baseURL = 'https://www.ilmeteo.it/portale/archivio-meteo/'
-
-    // Will cycle through the months in a loop
-    const months = [
-        'Gennaio',
-        'Febbraio',
-        'Marzo',
-        'Aprile',
-        'Maggio',
-        'Giugno',
-        'Luglio',
-        'Agosto',
-        'Settembre',
-        'Ottobre',
-        'Novembre',
-        'Dicembre'
-    ]
 
     // Starting from Gennaio/January
     let month = months[0]
@@ -84,6 +84,7 @@ const getMonthData = async (link) => {
     return myarray
 }
 
+// Gets and extracts the data for the given time span
 const getFullData = async (links) => {
     let currentMonth = null
     let promises = []
@@ -92,11 +93,56 @@ const getFullData = async (links) => {
         promises.push(currentMonth)
     })
     let data = await axios.all(promises)
-    console.log(data)
+    //console.log(data)
+    return data
 }
+
+// Utility Function that prints the a month worth of data
+const printMonthData = (data) => {
+    console.log('Day      Tavg C   Tmin C   Tmax C   Rain mm  Umid%    Wind Km/hGust Km/h')
+    data.forEach(month => {
+        let line = ''
+        month.forEach(item => {
+            let paddedItem = (item + '          ').slice(0, 9)
+            line+=paddedItem
+        })
+        console.log(line)
+    })
+}
+
+// utility function that prints a month in succession every time it's invoked
+const printMonth = (function() {
+    let i = 0
+    return function () {
+      if (i == 12) {
+        i = 0
+      } 
+        console.log(months[i])
+        return i++
+    }
+    
+}())
+
+// Prints the full data to the console
+const printFull = (year, data) => {
+    let i = 0
+    console.log('------------------------------------------------------------------------')
+    data.forEach(month => {
+        if (i % 12 === 0){
+            console.log(`\n${year}\n`)
+        }
+        printMonth()
+        printMonthData(data[i])
+        i++
+    })
+}
+    
+
 
 module.exports = {
     generateLinks,
     getMonthData,
-    getFullData
+    getFullData,
+    printMonthData,
+    printFull
 }

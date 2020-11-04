@@ -18,7 +18,7 @@ const months = [
     'Dicembre'
 ]
 
-const generateLinks = (year=1980, yearsToCheck=2, city) => {
+const generateLinks = (year=1980, yearsToCheck=1, city) => {
     // Base address of the weather forecast service with the historical data.
     const baseURL = 'https://www.ilmeteo.it/portale/archivio-meteo/'
 

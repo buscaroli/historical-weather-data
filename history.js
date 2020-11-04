@@ -13,16 +13,10 @@ let year = process.argv.slice(2,3).toString()
 const yearsToCheck = process.argv.slice(3,4)
 const city = process.argv.slice(4).join('+') 
 
-/* 
- *  Generating a list of address from which to extract the weather data. 
- */
 
+// Generating a list of address from which to extract the weather data. 
 let myAddresses = utils.generateLinks(year, yearsToCheck, city)
 
-//console.log('Address: ', myAddresses[0])
-// utils.getMonthData(myAddresses[0])
-//     .then(data => utils.printMonthData(data))
-
-//console.log(myAddresses)
+// Displaying the data to the console.
 utils.getFullData(myAddresses)
     .then(data => utils.printFull(year, data))

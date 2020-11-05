@@ -172,7 +172,7 @@ const dumpData = (city, year, data) => {
             collectedData.push(
                 {
                     city:           city,
-                    year:           currentYear,
+                    year:           parseInt(currentYear),
                     month:          currentMonth,
                     day:            day[0],
                     tempAvg:        day[1],

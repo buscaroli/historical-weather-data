@@ -21,6 +21,7 @@ const city = process.argv.slice(4).join('+')
 
 // Generating a list of address from which to extract the weather data. 
 let myAddresses = utils.generateLinks(year, yearsToCheck, city)
+// console.log(myAddresses)
 
 // Displaying the data to the console.
 // utils.getFullData(myAddresses)
@@ -33,4 +34,5 @@ let myAddresses = utils.generateLinks(year, yearsToCheck, city)
 // Prints the data to the console as an array of JSON objects
 utils.getFullData(myAddresses)
     .then(data => utils.dumpData(city, year, data))
-    .then(weatherData => console.log(weatherData))
+    .then(weatherData => weatherData.forEach(day => console.log(day)))
+    .catch(err => console.log(err))

@@ -22,6 +22,10 @@ const generateLinks = (year=1980, yearsToCheck=1, city) => {
     // Base address of the weather forecast service with the historical data.
     const baseURL = 'https://www.ilmeteo.it/portale/archivio-meteo/'
 
+    // Get current year and month
+    let today = new Date()
+    let cYear = today.getFullYear()
+
     // Starting from Gennaio/January
     let month = months[0]
     // Initial address
@@ -34,7 +38,10 @@ const generateLinks = (year=1980, yearsToCheck=1, city) => {
     }
     for (let i = 0; i < yearsToCheck; i++) {
         months.forEach((month) => {
-            links.push(fullURL = `${baseURL}${city}/${year}/${month}`) 
+            //console.log(`Year: ${year}, cYear: ${cYear}, typeof(year): ${typeof(year)}, typeof cYear: ${typeof(cYear)}`)
+            if (year < cYear){
+                links.push(fullURL = `${baseURL}${city}/${year}/${month}`)
+            } 
         })
         year++
     }
@@ -158,9 +165,7 @@ const dumpData = (city, year, data) => {
 
     let traversedMonths = 0
     data.forEach(month => {
-        if (traversedMonths % 12 === 0) {
-            currentYear++
-        }
+        
         currentMonth = cycleMonth()
 
         month.forEach(day => {
@@ -181,6 +186,10 @@ const dumpData = (city, year, data) => {
             )}
         )  
         traversedMonths++
+        
+        if (traversedMonths % 12 === 0) {
+            currentYear++
+        }
     })
     return collectedData
 }

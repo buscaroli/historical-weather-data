@@ -20,10 +20,9 @@ const weatherBaseURL = `http://api.weatherstack.com/current?access_key=${WEATHER
 const getCoordinates = async () => {
     try {
         const response = await axios.get(mapboxURL) 
-        //console.log(response)
         return response
     } catch (err) {
-        console.log('MB Error: ', err)
+        return console.log('Please enter a valid city/town.',)
     }
 }
 
@@ -36,7 +35,7 @@ getCoordinates()
                 const weatherData = await axios.get(`${weatherBaseURL}&query=${lat},${lon}`)
                 console.log(weatherData)
             } catch (err) {
-                console.log('WS Error: ', err)
+                console.log('Error.')
             }
         }
         getWeather()
